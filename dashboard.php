@@ -1,11 +1,26 @@
+<?php
+include 'db.php';
+session_start();
+if(!isset($_SESSION['email']) && !isset($_SESSION['uid']))
+{
+  header('Location:index.php');   
+}
+
+else
+{$uname=$_SESSION['email'];
+$uid=$_SESSION['uid'];
+	}
+
+?>
+
+
+
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Zorro---Keep Your Pockets safe</title>
+<title>Zorro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Shoppy Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- jQuery and Bootstrap -->
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
@@ -49,7 +64,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											<div class="profile_img">	
 												<span class="prfil-img"><img src="images/p1.png" alt=""> </span> 
 												<div class="user-name">
-													<p>Overlord</p>
+													<p><?php echo $_SESSION['email'];?></p>
 													<span>Zorro User</span>
 												</div>
 												<i class="fa fa-angle-down lnr"></i>
@@ -60,7 +75,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										<ul class="dropdown-menu drp-mnu">
 											<li> <a href="#"><i class="fa fa-cog"></i> Settings</a> </li> 
 											<li> <a href="#"><i class="fa fa-user"></i> Profile</a> </li> 
-											<li> <a href="#"><i class="fa fa-sign-out"></i> Logout</a> </li>
+											<li> <a href="logout.php"><i class="fa fa-sign-out" ></i> Logout</a> </li>
 										</ul>
 									</li>
 								</ul>
@@ -89,11 +104,31 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!--inner block start here-->
 <div class="inner-block">
 <!--market updates updates-->
+
 	 <div class="market-updates">
 			<div class="col-md-4 market-update-gd">
 				<div class="market-update-block clr-block-1">
 					<div class="col-md-8 market-update-left">
-						<h3><?php echo 83026; ?></h3>
+						<h3><?php 
+$userid=$_SESSION['email'];
+$a="SELECT amount FROM income WHERE email like '$userid'";
+
+$result = mysql_query($a);
+
+if (mysql_num_rows($result) > 0) {
+     // output data of each row
+	 $sumres=0;
+     while($row = mysql_fetch_assoc($result)) {
+         $sumres+=$row['amount'];
+     }
+	 $_SESSION['income']=$sumres;
+	 echo $sumres;
+} else {
+	$sumres=0;
+	 $_SESSION['income']=$sumres;
+     echo "$sumres";
+} 
+?></h3>
 						<h4>Total Money</h4>
 						<p>Money from all sources</p>
 					</div>
@@ -106,9 +141,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div class="col-md-4 market-update-gd">
 				<div class="market-update-block clr-block-2">
 				 <div class="col-md-8 market-update-left">
-					<h3><?php echo 13698; ?></h3>
-					<h4>Wallet Cash</h4>
-					<p>Cash in your hand</p>
+					<h3><?php 
+							$userid=$_SESSION['email'];
+$a="SELECT amount FROM expend WHERE email like '$userid'";
+
+$result = mysql_query($a);
+
+if (mysql_num_rows($result) > 0) {
+     // output data of each row
+	 $expres=0;
+     while($row = mysql_fetch_assoc($result)) {
+         $expres+=$row['amount'];
+     }
+	 $_SESSION['expend']=$expres;
+	 echo $expres;
+} else {
+	$expres=0;
+	 $_SESSION['expend']=$expres;	
+     echo "$expres";
+} 	
+					?></h3>
+					<h4>Expenditure</h4>
+					<p>Spend by You</p>
 				  </div>
 					<div class="col-md-4 market-update-right">
 						<i class="fa fa-eye"> </i>
@@ -119,9 +173,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div class="col-md-4 market-update-gd">
 				<div class="market-update-block clr-block-3">
 					<div class="col-md-8 market-update-left">
-						<h3><?php echo 69328; ?></h3>
-						<h4>Asset Cash</h4>
-						<p>Cash in your Bank</p>
+						<h3><?php $res=$_SESSION['income']-$_SESSION['expend']; echo " $res";?></h3>
+						<h4>Wallet Cash</h4>
+						<p>Cash in your wallet</p>
 					</div>
 					<div class="col-md-4 market-update-right">
 						<i class="fa fa-envelope-o"> </i>
@@ -137,86 +191,71 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<div class="col-md-6 chit-chat-layer1-left">
                <div class="work-progres">
                             <div class="chit-chat-heading">
-                                  Recent Transactions
+								<center>Recent Income</center>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                  <thead>
-                                    <tr>
-                                      <th>#</th>
-                                      <th>Transaction</th>
-                                      <th>Person</th>                                   
-                                                                        
-                                      <th>Category</th>
-                                      <th>Amount</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>1</td>
-                                  <td>Food</td>
-                                  <td>Malorum</td>                                 
-                                                             
-                                  <td><span class="label label-danger">Expenditure</span></td>
-                                  <td><span class="badge badge-info">5000</span></td>
-                              </tr>
-                              <tr>
-                                  <td>2</td>
-                                  <td>Hospital</td>
-                                  <td>Evan</td>                               
-                                                                  
-                                  <td><span class="label label-danger">Expenditure</span></td>
-                                  <td><span class="badge badge-info">40000</span></td>
-                              </tr>
-                              <tr>
-                                  <td>3</td>
-                                  <td>Internet</td>
-                                  <td>John</td>                                
-                                  
-                                  <td><span class="label label-danger">Expenditure</span></td>
-                                  <td><span class="badge badge-info">750</span></td>
-                              </tr>
-                              <tr>
-                                  <td>4</td>
-                                  <td>Client Ops</td>
-                                  <td>Danial</td>                                 
-                                                             
-                                  <td><span class="label label-success">Income</span></td>
-                                  <td><span class="badge badge-info">65000</span></td>
-                              </tr>
-                              <tr>
-                                  <td>5</td>
-                                  <td>Photography</td>
-                                  <td>David</td>                                
-                                                                 
-                                  <td><span class="label label-success">income</span></td>
-                                  <td><span class="badge badge-danger">20000</span></td>
-                              </tr>
-                              <tr>
-                                  <td>6</td>
-                                  <td>Party</td>
-                                  <td>Ace batch</td>                                  
-                                                             
-                                  <td><span class="label label-success">income</span></td>
-                                  <td><span class="badge badge-success">5060</span></td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
+							<?php
+								$userid=$_SESSION['email'];
+								$sel="SELECT * FROM income WHERE email LIKE '$userid' ORDER BY `s.no` DESC LIMIT 0,5";
+								$qu=mysql_query($sel);
+								echo"<center>";
+								echo "<table border='1'>
+									<tr style='background-color:green;color:white;'>
+								<th style='padding:10px; text-align:center;'>S.no</th>
+								<th style='padding:10px; text-align:center;'>Resource</th>
+								<th style='padding:10px; text-align:center;'>Date</th>
+								<th style='padding:10px; text-align:center;'>Amount</th>
+								</tr>";
+								if(mysql_num_rows($qu)>0){
+									$r=1;
+                                while($row = mysql_fetch_assoc($qu)) {
+								echo "<tr>
+								<th style='padding:10px; text-align:center;'>".$r."</th>
+								<th style='padding:10px; text-align:center;'>".$row['incomesrc']."</th>
+								<th style='padding:10px; text-align:center;'>".$row['date']."</th>
+								<th style='padding:10px; text-align:center;'>".$row['amount']."</th>
+								</tr>";		 
+								$r++;
+     }
+								}
+								echo "</table>";
+								echo"</center>";
+							?>
              </div>
       </div>
       <div class="col-md-6 chit-chat-layer1-rit">    	
-      	  <div class="geo-chart">
-					<section id="charts1" class="charts">
-				<div class="wrapper-flex">
-				    <div class="col geo_main">
-				        <div id="geoChart" class="chart"> </div>
-				    </div>
-				</div>
-				</section>				
-			</div>
-      </div>
-     <div class="clearfix"> </div>
+      	  <div class="work-progres">
+                            <div class="chit-chat-heading">
+								<center>Recent Expenditure</center>
+                            </div>
+							<?php
+								$userid=$_SESSION['email'];
+								$sel="SELECT * FROM expend WHERE email LIKE '$userid' ORDER BY `s.no` DESC LIMIT 0,5";
+								$qu=mysql_query($sel);
+								echo"<center>";
+								echo "<table border='1' class='tab'>
+									<tr style='background-color:red;color:white;'>
+								<th style='padding:10px; text-align:center;'>S.no</th>
+								<th style='padding:10px; text-align:center;'>Category</th>
+								<th style='padding:10px; text-align:center;'>Date</th>
+								<th style='padding:10px; text-align:center;'>Amount</th>
+								</tr>";
+								if(mysql_num_rows($qu)>0){
+									$r=1;
+                                while($row = mysql_fetch_assoc($qu)) {
+								echo "<tr>
+								<th style='padding:10px; text-align:center;'>".$r."</th>
+								<th style='padding:10px; text-align:center;'>".$row['resourse']."</th>
+								<th style='padding:10px; text-align:center;'>".$row['date']."</th>
+								<th style='padding:10px; text-align:center;'>".$row['amount']."</th>
+								</tr>";		 
+								$r++;
+     }
+								}
+								echo "</table>";
+								echo"</center>";
+							?>
+             </div>
+      </div>     <div class="clearfix"> </div>
 </div>
 <!--main page chit chating end here-->
 <!--main page chart start here-->
@@ -308,13 +347,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										pointColor : "#68ae00",
 										pointStrokeColor : "#fff",
 										data : [65,59,90,81,56,55,40]
-									},
-									{
-										fillColor : "rgba(236, 133, 38, 0.82)",
-										strokeColor : "#ec8526",
-										pointColor : "#ec8526",
-										pointStrokeColor : "#fff",
-										data : [28,48,40,19,96,27,100]
 									}
 								]
 								
@@ -346,7 +378,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		          <ul id="menu-comunicacao-sub" >
 		            <li id="menu-mensagens" style="width: 120px" ><a href="#myModal" role="button" class="btn" data-toggle="modal">Add Income</a>
 		            </li>
-		            <li id="menu-arquivos" ><a href="#myModal2" role="button" class="btn" data-toggle="modal">Add Expense</a></li>
+		            <li id="menu-mensagens" ><a href="#myModal2" role="button" class="btn" data-toggle="modal">Add Expense</a></li>
 		          </ul>
 		        </li>
 		          <li><a href="http://www.allpointnetwork.com/Flocator.aspx"><i class="fa fa-map-marker"></i><span>Maps</span></a></li>
@@ -392,65 +424,244 @@ $(".sidebar-icon").click(function() {
             });
 </script>
 <!--modals start here -->
-  <div class="modal fade" id="myModal" role="dialog">
+<!--modals start here -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Income</h4>
-        </div>
-        <div class="modal-body">
-          <form style="text-align: center;">
-          <label>Income Source</label>
-          	<input type="text" name="Income-Name"><br><br>
-          	<label>Date</label>
-          	<input type="date" name="expdate" style="width:200px; height: 30px; margin-left: 80px;"><br><br>
-          <label style="margin-right: 60px;">Amount</label>
-          	<input type="number" name="Income-data">
-          </form>
-        </div>
-        <div class="modal-footer">
-          <input type="submit" class="btn btn-default" data-dismiss="modal" value="Submit">
-        </div>
-      </div>
-      
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Add Income Details
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form" action="income.php" method="post">
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="inputEmail3">Source</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="incomesrc" class="form-control" 
+                        id="inputEmail3" placeholder="Income Source"/>
+                    </div>
+					<div class="form-group"><br><br>
+                    <label  class="col-sm-2 control-label"
+                              for="inputEmail3">Date</label>
+					<div class="col-sm-10">
+                        <input type="Date" name="date" class="form-control" 
+                        id="inputEmail3" placeholder="Date"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label"
+                          for="inputPassword3" >Amount</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="amount" class="form-control"
+                            id="inputPassword3" placeholder="Amount"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+            </div>
     </div>
-  </div>
-  <div class="modal fade" id="myModal2" role="dialog">
+</div>
+</div>
+
+<!--modals start here -->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Expense</h4>
-        </div>
-        <div class="modal-body">
-          <form style="text-align: center;">
-          <label>Category</label>
-          	<select style="width:200px; height: 30px; ">
-          		<option>Food</option>
-          		<option>Travel</option>
-          		<option>Education</option>
-          		<option>Medicines</option>
-          		<option>Accommodation</option>
-          		<option>Entertainment</option>
-          	</select><br><br>
-          	<label>Date</label>
-          	<input type="date" name="expdate" style="width:200px; height: 30px; margin-left: 35px;"><br><br>
-          <label>Amount</label>
-          	<input type="number" name="Expense-data" style="width:200px; height: 30px; margin-left: 10px;">
-          </form>
-        </div>
-        <div class="modal-footer">
-          <input type="submit" class="btn btn-default" data-dismiss="modal" value="Submit">
-        </div>
-      </div>
-      
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Add Expense Details
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form" action="expend.php" method="post">
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="inputEmail3">Category</label>
+                    <div class="col-sm-10">
+                        <select name="resourse" class="form-control" 
+                        id="inputEmail3">
+						<option>Food</option>
+						<option>Travel</option>
+						<option>Education</option>
+						<option>Medicine</option>
+						<option>Accommodation</option>
+						<option>Entertainment</option>
+						<option>Others</option>
+						</select>
+                    </div>
+					<div class="form-group"><br><br>
+                    <label  class="col-sm-2 control-label"
+                              for="inputEmail3">Date</label>
+					<div class="col-sm-10">
+                        <input type="Date" name="date" class="form-control" 
+                        id="inputEmail3" placeholder="Date"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label"
+                          for="inputPassword3" >Amount</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="amount" class="form-control"
+                            id="inputPassword3" placeholder="Amount"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                  </div>
+                </form>
+                
+                
+                
+                
+                
+                
+            </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+            </div>
+        
     </div>
-  </div>
+</div>
+</div>
+
+<!--modals start here -->
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Add Income Details
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form" action="change.php" method="post">
+                  <div class="form-group">
+                    <div class="col-sm-10">
+                        <input type="text" name="pass" class="form-control" 
+                        id="inputEmail3" placeholder="Current Password"/>
+                    </div>
+					<div class="form-group"><br><br>
+					<div class="col-sm-10">
+                        <input type="Text" style="width: 467px; margin-left: 15px;" name="pass_new" class="form-control" 
+                        id="inputEmail3" placeholder="New Password"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+            </div>
+    </div>
+</div>
+</div>
+
+
+<!--modals start here -->
+<div class="modal fade" id="myModal4" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Add Income Details
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form" action="changepropic.php" method="post">
+                  <div class="form-group">
+                    <div class="col-sm-10">
+                           Select image to upload:
+    <input type="file" name="profile_img" id="profile_img">
+                    </div>
+                   </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+            </div>
+    </div>
+</div>
+</div>
 <!--modals end here   -->
 <!--scrolling js-->
 		<script src="js/jquery.nicescroll.js"></script>
